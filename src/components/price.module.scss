@@ -1,0 +1,12 @@
+@mixin font($size:1.4rem, $height: 1.8rem, $weight: normal, $style: normal) {
+  font-size: $size;
+  line-height: $height;
+  font-weight: $weight;
+  font-style: $style;
+}
+
+.price {
+  @include font();
+  margin-top: 6px;
+  color: #666666;
+}
