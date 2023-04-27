@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react"
 import Price from "./Price"
 
-export default function SizeBlock({length, width, price}) {
+export default function SizeBlock({length, width, price, isCurrentlySelected, onSizeClick}) {
 
   const style={
     width: '163px',
@@ -18,10 +19,21 @@ export default function SizeBlock({length, width, price}) {
     lineHeight: '1.7rem',
   }
 
+  const [isSelected, setIsSelected] = useState(isCurrentlySelected)
+
+  useEffect(() => {
+    setIsSelected(isCurrentlySelected)
+  },[isCurrentlySelected])
+
+  function selectItem(){
+    onSizeClick(isSelected)
+    setIsSelected(prev => !prev)
+  }
+
   return (
     <div style={{flexBasis: '50%', display: 'flex', justifyContent: 'center', marginTop: '16px'}}>
       <div>
-        <div style={style}>{length}x{width}</div>
+        <div style={style} onClick={selectItem}>{length}x{width}</div>
         <Price price={price}/>
       </div>
       

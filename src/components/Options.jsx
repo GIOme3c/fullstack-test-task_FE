@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Card from "./Card";
 import SizeBlock from "./SizeBlock";
 import classes from '../pages/products/products.module.scss'
 import optionsStyles from './options.module.scss'
 import { useGetProductQuery } from "@/store/products/products.api";
 import { useSelector } from "react-redux";
+import { useActions } from "@/hooks/useActions";
 
 const options = [
   {
@@ -33,12 +34,38 @@ export default function Options({productId}) {
 
   const { data, error } = useGetProductQuery(productId)
   const { cart } = useSelector(state => state)
+  const { setItem, addItem } = useActions()
   const [optionsName, setOptionsName] = useState(options[0].path);
-//   console.log(cart)
-//   const [isProductAdded, setIsProductAdded] = useState(!!cart.filter(item => item.product_id === productId))
-  const currentProduct = cart.filter(item => item.product_id === productId) || false
+  console.log(cart)
+  // const [currentProduct, setcurrentProduct] = useState(cart.filter(item => +item.product_id === +productId)[0] || false)
 
-//   function onCircleClick(optionType)
+
+  // useEffect(() => {
+  //   setcurrentProduct(cart.filter(item => +item.product_id === +productId)[0] || false)
+  // },[cart])
+
+  // const currentProduct = cart.filter(item => item.product_id === productId)[0] || false
+  const currentProduct = cart[productId]
+  function onCircleClick(optionType, option){
+    return (isAdded) =>{
+      console.log("First", currentProduct, productId)
+      if (!currentProduct) {
+        console.log("Second")
+        addItem({
+          product_id:data.product_id,
+          image:data.image,
+          price:data.price,
+          slug:data.slug,
+          title:data.title,
+        })
+      }
+      setItem({
+        id:productId, 
+        key:optionType, 
+        value:isAdded ? null : option
+      })
+    }
+  }
 
 
   const optionsJsx = options.map(option => {
@@ -65,7 +92,7 @@ export default function Options({productId}) {
           title={option.title} 
           price={option.price}
           isCurrentlyAdded={currentProduct?.material?.material_id === option.material_id || false}
-        //   onCircleClick={(isAdded) => isAdded ? addItem(product) : removeItem(product.product_id)}
+          onCircleClick={onCircleClick("material", option)}
         />)}
 
         {optionsName === 'sizes' && data.sizes.map(option => <SizeBlock 
@@ -73,8 +100,8 @@ export default function Options({productId}) {
           length={option.length} 
           width={option.width} 
           price={option.percent_price}
-          isCurrentlyAdded={currentProduct?.size?.size_id === option.size_id || false}
-        //   onCircleClick={(isAdded) => isAdded ? addItem(product) : removeItem(product.product_id)}
+          isCurrentlySelected={currentProduct?.size?.size_id === option.size_id || false}
+          onSizeClick={onCircleClick("size", option)}
         />)}
         
         {optionsName === 'bases' && data.bases.map(option => <Card
@@ -83,7 +110,7 @@ export default function Options({productId}) {
           title={option.title} 
           price={option.price}
           isCurrentlyAdded={currentProduct?.base?.base_id === option.base_id || false}
-        //   onCircleClick={(isAdded) => isAdded ? addItem(product) : removeItem(product.product_id)}
+          onCircleClick={onCircleClick("base", option)}
         />)}
 
         {optionsName === 'options' && data.options.map(option => <Card 
@@ -92,7 +119,7 @@ export default function Options({productId}) {
           title={option.title} 
           price={option.price}
           isCurrentlyAdded={currentProduct?.option?.option_id === option.option_id || false}
-        //   onCircleClick={(isAdded) => isAdded ? addItem(product) : removeItem(product.product_id)}
+          onCircleClick={onCircleClick("option", option)}
         />)}
       </div>
       }

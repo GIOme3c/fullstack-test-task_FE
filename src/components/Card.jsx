@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Price from "./Price"
 import classes from './card.module.scss'
 import noImage from "../img/no-image.jpg"
@@ -14,6 +14,10 @@ export default function Card({img, title, price, openParams=undefined, isCurrent
   }
 
   const [isAdded, setIsAdded] = useState(isCurrentlyAdded)
+
+  useEffect(() => {
+    setIsAdded(isCurrentlyAdded)
+  },[isCurrentlyAdded])
 
   function addItem(e){
     e.stopPropagation()

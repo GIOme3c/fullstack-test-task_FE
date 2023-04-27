@@ -10,13 +10,7 @@ export default function Products() {
 
   const { cart } = useSelector(state => state)
   const { addItem, removeItem } = useActions()
-
-  // console.log(cart)
-  let cartIds = {}
-  cart?.forEach(item => {
-    cartIds[item.product_id] = true
-  });
-
+  console.log(cart)
   const { data, error } = useGetProductsQuery()
   let router= useRouter()
 
@@ -35,7 +29,7 @@ export default function Products() {
       title={product.title} 
       price={product.price} 
       openParams={() => openParams(product.product_id)} 
-      isCurrentlyAdded={cartIds[product.product_id] || false}
+      isCurrentlyAdded={cart[product.product_id]}
       onCircleClick={(isAdded) => isAdded ?removeItem(product.product_id) : addItem(product)}
     />
   })
