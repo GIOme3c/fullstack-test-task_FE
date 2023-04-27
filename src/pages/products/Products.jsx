@@ -1,28 +1,48 @@
-import { useState } from "react"
+import { useRouter } from 'next/router'
 import Card from "../../components/Card"
 import Options from "../../components/Options"
 import classes from "./products.module.scss"
 import { useGetProductsQuery } from "../../store/products/products.api"
+import { useSelector } from 'react-redux'
+import { useActions } from '@/hooks/useActions'
 
 export default function Products() {
 
-  const [isOpenParams, setIsOpenParams] = useState(false)
+  const { cart } = useSelector(state => state)
+  const { addItem, removeItem } = useActions()
+
+  // console.log(cart)
+  let cartIds = {}
+  cart?.forEach(item => {
+    cartIds[item.product_id] = true
+  });
+
   const { data, error } = useGetProductsQuery()
+  let router= useRouter()
 
+  function redirect(p_id) {
+    router.push('/options/'+p_id)
+  }
 
-  function openParams() {
-    setIsOpenParams(true)
+  function openParams(p_id) {
+    redirect(p_id)
   }
 
   const products = data?.map(product => {
-    return <Card key={product.product_id} img={product.image} title={product.title} price={product.price} openParams={openParams}/>
+    return <Card 
+      key={product.product_id}
+      img={product.image} 
+      title={product.title} 
+      price={product.price} 
+      openParams={() => openParams(product.product_id)} 
+      isCurrentlyAdded={cartIds[product.product_id] || false}
+      onCircleClick={(isAdded) => isAdded ?removeItem(product.product_id) : addItem(product)}
+    />
   })
 
   return (
     <div>
-      {!isOpenParams && <div  className={classes.container}>{products}</div>}
-      {isOpenParams && <Options/>}
-      {/* <button style={{position:'absolute', top: '200px', right: '100px'}} onClick={() => openParams()}>OPEN</button> */}
+      <div  className={classes.container}>{products}</div>
     </div>
   )
 }

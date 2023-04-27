@@ -3,7 +3,7 @@ import Price from "./Price"
 import classes from './card.module.scss'
 import noImage from "../img/no-image.jpg"
 
-export default function Card({img, title, price, openParams=0}) {
+export default function Card({img, title, price, openParams=undefined, isCurrentlyAdded=false, onCircleClick}) {
   const styleImage = {
     backgroundImage: img ? `url('https://api.architektoria.ru${img}')` : `url(${noImage.src})`,
     backgroundSize: 'cover',
@@ -13,14 +13,20 @@ export default function Card({img, title, price, openParams=0}) {
     position: 'relative',
   }
 
-  const [isAdded, setIsAdded] = useState(false)
+  const [isAdded, setIsAdded] = useState(isCurrentlyAdded)
+
+  function addItem(e){
+    e.stopPropagation()
+    onCircleClick(isAdded)
+    setIsAdded(prev => !prev)
+  }
 
   return (
     <div className={classes.container}> {/* bcontainer */}
     <div>
-      <div style={styleImage} onClick={openParams !== 0 ? openParams : null}> {/* background image */}
+      <div style={styleImage} onClick={openParams}> {/* background image */}
         
-        <div onClick={() => setIsAdded(prev => !prev)} className={classes.icon}>
+        <div onClick={e => addItem(e)} className={classes.icon}>
           {!isAdded && <span className={classes.addIcon}> </span>}
           {isAdded && <span className={classes.addedIcon}> </span>}
         </div>
