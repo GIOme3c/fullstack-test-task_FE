@@ -36,21 +36,11 @@ export default function Options({productId}) {
   const { cart } = useSelector(state => state)
   const { setItem, addItem } = useActions()
   const [optionsName, setOptionsName] = useState(options[0].path);
-  console.log(cart)
-  // const [currentProduct, setcurrentProduct] = useState(cart.filter(item => +item.product_id === +productId)[0] || false)
-
-
-  // useEffect(() => {
-  //   setcurrentProduct(cart.filter(item => +item.product_id === +productId)[0] || false)
-  // },[cart])
-
-  // const currentProduct = cart.filter(item => item.product_id === productId)[0] || false
   const currentProduct = cart[productId]
+
   function onCircleClick(optionType, option){
     return (isAdded) =>{
-      console.log("First", currentProduct, productId)
       if (!currentProduct) {
-        console.log("Second")
         addItem({
           product_id:data.product_id,
           image:data.image,
@@ -99,7 +89,7 @@ export default function Options({productId}) {
           key={option.size_id} 
           length={option.length} 
           width={option.width} 
-          price={option.percent_price}
+          price={(option.percent_price*currentProduct?.price/100).toFixed(1)}
           isCurrentlySelected={currentProduct?.size?.size_id === option.size_id || false}
           onSizeClick={onCircleClick("size", option)}
         />)}

@@ -10,7 +10,6 @@ export default function Products() {
 
   const { cart } = useSelector(state => state)
   const { addItem, removeItem } = useActions()
-  console.log(cart)
   const { data, error } = useGetProductsQuery()
   let router= useRouter()
 

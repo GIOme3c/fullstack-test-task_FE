@@ -9,8 +9,15 @@ export const productsApi = createApi({
     }),
     getProduct: build.query({
       query: (id) => 'products/'+id
+    }),
+    saveOrder: build.mutation({
+      query: (body) => ({
+        url: 'orders',
+        method: 'POST',
+        body,
+      })
     })
   })
 })
 
-export const { useGetProductQuery, useGetProductsQuery } = productsApi
+export const { useGetProductQuery, useGetProductsQuery, useSaveOrderMutation } = productsApi
